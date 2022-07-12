@@ -26,10 +26,14 @@ public class StudyPost {
     @JoinColumn(name = "study_id")
     private Study study;
 
+    @Column(length = 100)
+    private String link;
+
     @Builder
-    public StudyPost(Long id, User user, Study study) {
+    public StudyPost(Long id, User user, Study study, String link) {
         this.id = id;
         this.user = user;
         this.study = study;
+        this.link = link;
     }
 }
