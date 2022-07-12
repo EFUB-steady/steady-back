@@ -6,6 +6,7 @@ import com.steady.steadyback.util.errorutil.CustomException;
 import com.steady.steadyback.util.errorutil.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ public class TodolistService {
     private final UserStudyRepository userStudyRepository;
 
     //오늘의 투두리스트. 스터디 이름, 시, 분(study)
+    @Transactional
     public List<TodolistResponseDto> findTodolist(Long userId) {
         int dayOfWeek = getDayOfWeek(); //요일 1~7
 
