@@ -30,13 +30,18 @@ public class User {
     @Column(length = 13)
     private String phone;
 
+    @NotNull
+    @Column(length = 8)
+    private String name;
+
     @Builder
-    public User(Long id, String nickname, String email, String password, String phone) {
+    public User(Long id, String nickname, String email, String password, String phone, String name) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.phone = phone;
+        this.name = name;
     }
 
 }
