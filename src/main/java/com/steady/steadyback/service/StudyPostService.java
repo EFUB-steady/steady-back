@@ -4,6 +4,7 @@ package com.steady.steadyback.service;
 import com.steady.steadyback.domain.Study;
 import com.steady.steadyback.domain.StudyPost;
 import com.steady.steadyback.domain.StudyPostRepository;
+import com.steady.steadyback.domain.StudyRepository;
 import com.steady.steadyback.dto.StudyPostResponseDto;
 import com.steady.steadyback.util.errorutil.CustomException;
 import com.steady.steadyback.util.errorutil.ErrorCode;
@@ -20,6 +21,7 @@ public class StudyPostService {
 
     private final StudyPostRepository studyPostRepository;
 
+    private final StudyRepository studyRepository;
 
 
     public StudyPostResponseDto findByStudyIdStudyPostId(Long studyPostId) {
@@ -28,7 +30,11 @@ public class StudyPostService {
 
         return new StudyPostResponseDto(studyPost);
     }
-    public List<StudyPostResponseDto> findStudyPostListByStudyId(Long studyId) { //스터디 하나 인증글 리스트 조회
+    public List<StudyPostResponseDto> findStudyPostListByStudyId(Long studyId) {
+
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(()->new CustomException(ErrorCode.STUDY_NOT_FOUND));
+
 
         return studyPostRepository.findAllByStudyId(studyId)
                 .stream()
