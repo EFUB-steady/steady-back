@@ -8,6 +8,5 @@ import java.util.List;
 @Repository
 public interface UserStudyRepository extends JpaRepository<UserStudy, UserStudyID> {
     public UserStudy findByUserAndStudy(User user, Study study);
-
     public List<UserStudy> findByUser(User user);
 }
