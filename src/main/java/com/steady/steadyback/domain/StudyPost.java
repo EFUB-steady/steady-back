@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
@@ -29,11 +30,16 @@ public class StudyPost {
     @Column(length = 100)
     private String link;
 
+    @NotNull
+    @Column
+    private LocalDate date;
+
     @Builder
-    public StudyPost(Long id, User user, Study study, String link) {
+    public StudyPost(Long id, User user, Study study, String link, LocalDate date) {
         this.id = id;
         this.user = user;
         this.study = study;
         this.link = link;
+        this.date = date;
     }
 }
