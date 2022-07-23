@@ -1,5 +1,6 @@
 package com.steady.steadyback.controller;
 
+import com.steady.steadyback.domain.User;
 import com.steady.steadyback.dto.StudyResponseDto;
 import com.steady.steadyback.dto.StudyRequestDto;
 import com.steady.steadyback.dto.StudyGetResponseDto;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -49,11 +51,17 @@ public class StudyController {
         return studyResponseDto;
     }
 
-    @PutMapping("/{studyId}")
-    public StudyGetResponseDto updateStudy(@PathVariable Long studyId, @RequestBody StudyRequestDto studyRequestDto) {
-        Long id = studyService.updateStudyRule(studyId, studyRequestDto);
+    @PutMapping("/{studyId}/descriptions")
+    public StudyGetResponseDto updateStudyDescription(@PathVariable Long studyId, @RequestBody StudyRequestDto studyRequestDto) {
+        Long id = studyService.updateStudyDescription(studyId, studyRequestDto);
         StudyGetResponseDto studyGetResponseDto = studyService.findStudyById(id);
         return studyGetResponseDto;
     }
 
+    @PutMapping("/{studyId}/rules")
+    public StudyGetResponseDto updateStudyRule(@PathVariable Long studyId, @RequestBody StudyRequestDto studyRequestDto) {
+        Long id = studyService.updateStudyRule(studyId, studyRequestDto);
+        StudyGetResponseDto studyGetResponseDto = studyService.findStudyById(id);
+        return studyGetResponseDto;
+    }
 }

@@ -105,9 +105,12 @@ public class Study {
         this.peopleCount = peopleCount;
     }
 
-    public void updateRule(StudyRequestDto studyRequestDto) {
+    public void updateDescription(StudyRequestDto studyRequestDto) {
         this.name = studyRequestDto.getName();
         this.description = studyRequestDto.getDescription();
+    }
+
+    public void updateRule(StudyRequestDto studyRequestDto) {
         this.mon = studyRequestDto.getMon();
         this.tue = studyRequestDto.getTue();
         this.wed = studyRequestDto.getWed();

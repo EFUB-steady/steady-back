@@ -1,7 +1,6 @@
 package com.steady.steadyback.service;
 
-import com.steady.steadyback.domain.Study;
-import com.steady.steadyback.domain.StudyRepository;
+import com.steady.steadyback.domain.*;
 import com.steady.steadyback.dto.StudyRequestDto;
 import com.steady.steadyback.dto.StudyGetResponseDto;
 import com.steady.steadyback.util.errorutil.CustomException;
@@ -30,13 +29,7 @@ public class StudyService {
             throw new CustomException(ErrorCode.CANNOT_EMPTY_CONTENT);
         }
 
-        if(studyRequestDto.getHour() < 0 || studyRequestDto.getHour() > 23 || studyRequestDto.getMinute() < 0 || studyRequestDto.getMinute() > 59) {
-            throw new CustomException(ErrorCode.INVALID_VALUE);
-        }
-
-        if(studyRequestDto.getMoney() < studyRequestDto.getLateMoney()) {
-            throw new CustomException(ErrorCode.BIGGER_LATE_MONEY);
-        }
+        checkRule(studyRequestDto);
 
         UUID uuid = UUID.randomUUID();
         studyRequestDto.addUUID(uuid);
@@ -60,12 +53,33 @@ public class StudyService {
         studyRepository.deleteById(id);
     }
 
+    public Long updateStudyDescription(Long id, StudyRequestDto studyRequestDto) {
+        Study study = studyRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.STUDY_NOT_FOUND));
+
+        study.updateDescription(studyRequestDto);
+        studyRepository.save(study);
+        return study.getId();
+    }
+
     public Long updateStudyRule(Long id, StudyRequestDto studyRequestDto) {
         Study study = studyRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.STUDY_NOT_FOUND));
 
+        checkRule(studyRequestDto);
+
         study.updateRule(studyRequestDto);
         studyRepository.save(study);
         return study.getId();
+    }
+
+    private void checkRule(StudyRequestDto studyRequestDto) {
+        if(studyRequestDto.getHour() < 0 || studyRequestDto.getHour() > 23 || studyRequestDto.getMinute() < 0 || studyRequestDto.getMinute() > 59) {
+            throw new CustomException(ErrorCode.INVALID_VALUE);
+        }
+
+        if(studyRequestDto.getMoney() < studyRequestDto.getLateMoney()) {
+            throw new CustomException(ErrorCode.BIGGER_LATE_MONEY);
+        }
     }
 }

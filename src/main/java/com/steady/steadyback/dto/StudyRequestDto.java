@@ -28,6 +28,24 @@ public class StudyRequestDto {
     private Integer peopleCount;
 
     @Builder
+    public StudyRequestDto(String name, String description, Boolean mon, Boolean tue, Boolean wed, Boolean thu, Boolean fri, Boolean sat, Boolean sun,
+                           String account, Integer hour, Integer minute, Integer money, Integer lateMoney) {
+        this.name = name;
+        this.description = description;
+        this.mon = mon;
+        this.tue = tue;
+        this.wed = wed;
+        this.thu = thu;
+        this.fri = fri;
+        this.sat = sat;
+        this.sun = sun;
+        this.account = account;
+        this.hour = hour;
+        this.minute = minute;
+        this.money = money;
+        this.lateMoney = lateMoney;
+    }
+
     public StudyRequestDto(Study study) {
         this.name = study.getName();
         this.description = study.getDescription();

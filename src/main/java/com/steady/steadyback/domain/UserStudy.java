@@ -1,6 +1,7 @@
 package com.steady.steadyback.domain;
 
 import com.sun.istack.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,12 +38,30 @@ public class UserStudy implements Serializable {
     @NotNull
     private Integer nowFine;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 10)
     @NotNull
-    private String color;
+    private Color color;
 
     public Integer addNowFine() {
         this.nowFine += this.study.getMoney();
         return this.nowFine;
+    }
+
+    public Integer refreshNowFineAndGetLastFine(){
+        this.lastFine = this.getNowFine();
+        this.nowFine = 0;
+        return this.lastFine;
+    }
+
+    @Builder
+    public UserStudy(User user, Study study, Boolean leader, Integer score, Integer lastFine, Integer nowFine, Color color){
+        this.user = user;
+        this.study = study;
+        this.leader = leader;
+        this.score = score;
+        this.lastFine = lastFine;
+        this.nowFine = nowFine;
+        this.color = color;
     }
 }
