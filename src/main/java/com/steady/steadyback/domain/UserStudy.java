@@ -43,7 +43,7 @@ public class UserStudy implements Serializable {
     @NotNull
     private Color color;
 
-    public Integer addMoney() { //repotyService에서 사용
+    public Integer addNowFine() { //repotyService에서 사용
         this.nowFine += this.study.getMoney();
         return this.nowFine;
     }

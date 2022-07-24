@@ -5,12 +5,8 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.steady.steadyback.domain.*;
-import com.steady.steadyback.dto.StudyPostImageRequestDto;
-import com.steady.steadyback.dto.StudyPostRequestDto;
+import com.steady.steadyback.dto.*;
 
-import com.steady.steadyback.dto.StudyPostImageResponseDto;
-
-import com.steady.steadyback.dto.StudyPostResponseDto;
 import com.steady.steadyback.util.errorutil.CustomException;
 import com.steady.steadyback.util.errorutil.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +21,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,6 +43,55 @@ public class StudyPostService {
     private final UserStudyRepository userStudyRepository;
 
     private final AmazonS3Client amazonS3Client;
+
+    public StudyPostGetResponseDto findByStudyIdStudyPostId(Long studyPostId) {
+        StudyPost studyPost= studyPostRepository.findById(studyPostId)
+                .orElseThrow(()->new CustomException(ErrorCode.STUDY_POST_NOT_FOUND));
+
+        return new StudyPostGetResponseDto(studyPost);
+    }
+    public List<StudyPostGetResponseDto> findStudyPostListByDateAndStudy(Long studyId, String date) {
+
+        LocalDate Date = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
+        Study study= studyRepository.findById(studyId).orElseThrow(()->new CustomException(ErrorCode.STUDY_NOT_FOUND));
+
+        List<StudyPost> list = studyPostRepository.findByStudyAndDate(study, Date);
+        List<StudyPostGetResponseDto> total= new ArrayList<>();
+        for (StudyPost studyPost:list){
+            List<StudyPostImage> studyPostImage= studyPostImageRepository.findByStudyPost(studyPost);
+            for(StudyPostImage studyPostImage1: studyPostImage) {
+                total.add(new StudyPostGetResponseDto(studyPost, new StudyPostImageResponseDto(studyPostImage1)));
+            }
+        }
+
+        if(list.isEmpty()) throw new CustomException(ErrorCode.STUDY_POST_LIST_NOT_FOUND);
+
+        return total;
+    }
+
+
+    public List<StudyPostGetResponseDto> findStudyPostListByDateAndUser(Long userId, String date) {
+
+
+        LocalDate Date = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
+        User user= userRepository.findById(userId).orElseThrow(()->new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        List<StudyPost> list = studyPostRepository.findByUserAndDate(user, Date);
+        List<StudyPostGetResponseDto> total= new ArrayList<>();
+        for (StudyPost studyPost:list){
+            List<StudyPostImage> studyPostImage= studyPostImageRepository.findByStudyPost(studyPost);
+            for(StudyPostImage studyPostImage1: studyPostImage) {
+                total.add(new StudyPostGetResponseDto(studyPost, new StudyPostImageResponseDto(studyPostImage1)));
+
+            }
+        }
+
+        if(list.isEmpty()) throw new CustomException(ErrorCode.STUDY_POST_LIST_NOT_FOUND);
+
+        return total;
+    }
+
+
 
     @Value("${cloud.aws.s3.bucket}")
     public String bucket;  // S3 버킷 이름
@@ -72,7 +120,8 @@ public class StudyPostService {
 
         StudyPost studyPost = studyPostRepository.save(studyPostRequestDto.toEntity());
 
-        UserStudy userStudy = userStudyRepository.findByUserAndStudy(user, study);
+        UserStudy userStudy = userStudyRepository.findByUserAndStudy(user, study)
+                .orElseThrow(() -> new CustomException(ErrorCode.INFO_NOT_FOUNT));
 
         //요일 구하기
         LocalDateTime date = studyPost.getDate();

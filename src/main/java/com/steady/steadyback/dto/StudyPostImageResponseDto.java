@@ -14,6 +14,6 @@ public class StudyPostImageResponseDto {
 
     public StudyPostImageResponseDto(StudyPostImage studyPostImage) {
         this.StudyPostImageId=studyPostImage.getId();
-        this.image=studyPostImage.getImage();
+        this.image=studyPostImage.getImageUrl();
     }
 }
