@@ -49,10 +49,14 @@ public class UserController {
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())){
             throw new CustomException(ErrorCode.INCORRECT_PASSWORD);
         }
-        String token = jwtTokenProvider.createToken(user.getEmail(), user.getRole());
+
+        String access = jwtTokenProvider.createAccessToken(user.getEmail(), user.getRole());
+        String refresh = jwtTokenProvider.createRefreshToken(user.getEmail(), user.getRole());
+
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
                 .user(user)
-                .token(token)
+                .accessToken(access)
+                .refreshToken(refresh)
                 .build();
         return loginResponseDto;
     }

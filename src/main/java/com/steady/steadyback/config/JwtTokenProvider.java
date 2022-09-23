@@ -26,8 +26,10 @@ public class JwtTokenProvider {
     @Value("${jwt.secret")
     private String secretKey;
 
-    // 토큰 유효시간 3시간
-    private long tokenValidTime = 180 * 60 * 1000L;
+    // 토큰 유효시간 3시간 -> 30분으로 변경
+    private long accessTokenValidTime = 60 * 30;
+    // 14일
+    private long refreshTokenValidTime = 60 * 60 * 24 * 14;
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
@@ -35,15 +37,28 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    // JWT 토큰 생성
-    public String createToken(String userPk, String role) {
+    // Access JWT 토큰 생성
+    public String createAccessToken(String userPk, String role) {
         Claims claims = Jwts.claims().setSubject(String.valueOf(userPk));
         claims.put("roles", role);
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + tokenValidTime))
+                .setExpiration(new Date(now.getTime() + accessTokenValidTime))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+
+    // Refresh JWT 토큰 생성
+    public String createRefreshToken(String userPk, String role) {
+        Claims claims = Jwts.claims().setSubject(String.valueOf(userPk));
+        claims.put("roles", role);
+        Date now = new Date();
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
