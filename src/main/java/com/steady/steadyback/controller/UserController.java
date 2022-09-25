@@ -2,6 +2,8 @@ package com.steady.steadyback.controller;
 
 import com.steady.steadyback.config.JwtTokenProvider;
 
+import com.steady.steadyback.domain.RefreshToken;
+import com.steady.steadyback.domain.RefreshTokenRepository;
 import com.steady.steadyback.domain.User;
 import com.steady.steadyback.domain.UserRepository;
 import com.steady.steadyback.dto.*;
@@ -53,12 +55,22 @@ public class UserController {
         String access = jwtTokenProvider.createAccessToken(user.getEmail(), user.getRole());
         String refresh = jwtTokenProvider.createRefreshToken(user.getEmail(), user.getRole());
 
+        userService.updateRefreshToken(loginRequestDto.getEmail(), refresh); //리프레시 토큰 저장
+
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
                 .user(user)
                 .accessToken(access)
                 .refreshToken(refresh)
                 .build();
         return loginResponseDto;
+    }
+
+    @PostMapping("/token/refresh")
+    public RefreshTokenResponseDto refreshToken(@RequestHeader(value="X-AUTH-TOKEN") String token,
+                                                @RequestHeader(value="REFRESH-TOKEN") String refreshToken) {
+        String userEmail = jwtTokenProvider.getUserPk(token);
+        RefreshTokenResponseDto refreshTokenResponseDto = userService.refreshToken(userEmail, refreshToken);
+        return refreshTokenResponseDto;
     }
 
     @DeleteMapping("/{userId}")
