@@ -68,10 +68,9 @@ public class UserController {
     }
 
     @PostMapping("/token/refresh")
-    public RefreshTokenResponseDto refreshToken(@RequestHeader(value="X-AUTH-TOKEN") String token,
+    public RefreshTokenResponseDto refreshToken(@RequestHeader(value="KEY-EMAIL") String email,
                                                 @RequestHeader(value="REFRESH-TOKEN") String refreshToken) {
-        String userEmail = jwtTokenProvider.getUserPk(token);
-        RefreshTokenResponseDto refreshTokenResponseDto = tokenService.refreshToken(userEmail, refreshToken);
+        RefreshTokenResponseDto refreshTokenResponseDto = tokenService.refreshToken(email, refreshToken);
         return refreshTokenResponseDto;
     }
 

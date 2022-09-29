@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 역시 사용하지 않습니다.
                 .and()
                 .authorizeRequests() // 요청에 대한 사용권한 체크
-                .antMatchers("/*/signup", "/*/login", "/*/findId", "/*/findPw", "/health-check").permitAll() // 가입 및 인증 주소는 누구나 접근가능
+                .antMatchers("/*/signup", "/*/login", "/*/findId", "/*/findPw", "/health-check", "/*/token/refresh").permitAll() // 가입 및 인증 주소는 누구나 접근가능
                 .anyRequest().authenticated() //나머지 요청은 인증된 사람만
                 .and()
                 .exceptionHandling() //예외처리

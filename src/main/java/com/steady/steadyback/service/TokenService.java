@@ -36,7 +36,7 @@ public class TokenService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
         //refresh token db와 일치하는지 && 유효성 검사
-        if(refreshToken1.getRefreshToken() == refreshToken && jwtTokenProvider.validateToken(refreshToken)){
+        if((refreshToken1.getRefreshToken()).equals(refreshToken) && jwtTokenProvider.validateToken(refreshToken)){
             //새로 발급
             String accessToken = jwtTokenProvider.createAccessToken(user.getEmail(), user.getRole());
             String newRefreshToken = jwtTokenProvider.createRefreshToken(user.getEmail(), user.getRole());
