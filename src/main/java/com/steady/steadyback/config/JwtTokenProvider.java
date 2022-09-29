@@ -1,5 +1,6 @@
 package com.steady.steadyback.config;
 
+import com.steady.steadyback.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

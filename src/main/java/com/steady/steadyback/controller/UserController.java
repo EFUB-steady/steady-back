@@ -7,6 +7,7 @@ import com.steady.steadyback.domain.RefreshTokenRepository;
 import com.steady.steadyback.domain.User;
 import com.steady.steadyback.domain.UserRepository;
 import com.steady.steadyback.dto.*;
+import com.steady.steadyback.service.TokenService;
 import com.steady.steadyback.service.UserService;
 import com.steady.steadyback.util.errorutil.CustomException;
 import com.steady.steadyback.util.errorutil.ErrorCode;
@@ -30,6 +31,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
     @PostMapping("/signup")
     public ResponseEntity<Object> signup(@RequestBody SignupRequestDto signupRequestDto){
@@ -55,7 +57,7 @@ public class UserController {
         String access = jwtTokenProvider.createAccessToken(user.getEmail(), user.getRole());
         String refresh = jwtTokenProvider.createRefreshToken(user.getEmail(), user.getRole());
 
-        userService.updateRefreshToken(loginRequestDto.getEmail(), refresh); //리프레시 토큰 저장
+        tokenService.updateRefreshToken(loginRequestDto.getEmail(), refresh); //리프레시 토큰 저장
 
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
                 .user(user)
@@ -69,7 +71,7 @@ public class UserController {
     public RefreshTokenResponseDto refreshToken(@RequestHeader(value="X-AUTH-TOKEN") String token,
                                                 @RequestHeader(value="REFRESH-TOKEN") String refreshToken) {
         String userEmail = jwtTokenProvider.getUserPk(token);
-        RefreshTokenResponseDto refreshTokenResponseDto = userService.refreshToken(userEmail, refreshToken);
+        RefreshTokenResponseDto refreshTokenResponseDto = tokenService.refreshToken(userEmail, refreshToken);
         return refreshTokenResponseDto;
     }
 

@@ -35,8 +35,6 @@ import javax.mail.internet.MimeMessage;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final JavaMailSender javaMailSender;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Value("${spring.mail.username}")
     private String sender;
@@ -139,33 +137,5 @@ public class UserService implements UserDetailsService {
         return new UserUpdateResponseDto(userRepository.save(user), "정보가 수정되었습니다.");
     }
 
-    @Transactional
-    public void updateRefreshToken(String userEmail, String refreshToken){
-        //해당 이메일에 저장되어있던 리프레시 토큰 삭제
-        if(refreshTokenRepository.existsByUserEmail(userEmail)){
-            refreshTokenRepository.deleteByUserEmail(userEmail);
-        }
-        refreshTokenRepository.save(new RefreshToken(userEmail, refreshToken));
-    }
-
-    @Transactional
-    public RefreshTokenResponseDto refreshToken(String userEmail, String refreshToken){
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        RefreshToken refreshToken1 = refreshTokenRepository.findByUserEmail(userEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-        //refresh token db와 일치하는지 && 유효성 검사
-        if(refreshToken1.getRefreshToken() == refreshToken && jwtTokenProvider.validateToken(refreshToken)){
-            //새로 발급
-            String accessToken = jwtTokenProvider.createAccessToken(user.getEmail(), user.getRole());
-            String newRefreshToken = jwtTokenProvider.createRefreshToken(user.getEmail(), user.getRole());
-
-            updateRefreshToken(userEmail, newRefreshToken);
-
-            return new RefreshTokenResponseDto(accessToken, newRefreshToken);
-        }
-        else throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
-    }
 
 }
