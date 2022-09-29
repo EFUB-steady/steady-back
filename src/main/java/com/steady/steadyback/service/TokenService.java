@@ -25,7 +25,7 @@ public class TokenService {
         if(refreshTokenRepository.existsByUserEmail(userEmail)){
             refreshTokenRepository.deleteByUserEmail(userEmail);
         }
-        refreshTokenRepository.save(new RefreshToken(userEmail, refreshToken));
+        refreshTokenRepository.save(new RefreshToken(refreshToken, userEmail));
     }
 
     @Transactional
