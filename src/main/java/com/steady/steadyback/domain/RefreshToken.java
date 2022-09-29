@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Table(name = "refresh_token")
 @Entity
@@ -15,10 +16,9 @@ public class RefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private Long refreshTokenId;
+    @Column(name="refresh_token_id")
+    private Long id;
 
-    @Id
     @NotNull
     @Column
     private String refreshToken;
