@@ -9,8 +9,12 @@ import com.steady.steadyback.dto.RefreshTokenResponseDto;
 import com.steady.steadyback.util.errorutil.CustomException;
 import com.steady.steadyback.util.errorutil.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.naming.AuthenticationException;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -18,33 +22,41 @@ public class TokenService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
     public void updateRefreshToken(String userEmail, String refreshToken){
-        //해당 이메일에 저장되어있던 리프레시 토큰 삭제
-        if(refreshTokenRepository.existsByUserEmail(userEmail)){
-            refreshTokenRepository.deleteByUserEmail(userEmail);
-        }
-        refreshTokenRepository.save(new RefreshToken(refreshToken, userEmail));
+        // Redis에 저장 - 만료 시간 설정을 통해 자동 삭제 처리
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        redisTemplate.opsForValue().set(
+                userEmail,
+                refreshToken,
+                60 * 60 * 24 * 14,
+                TimeUnit.SECONDS
+        );
     }
 
     @Transactional
-    public RefreshTokenResponseDto refreshToken(String userEmail, String refreshToken){
+    public RefreshTokenResponseDto refreshToken(String userEmail, String refreshToken) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        RefreshToken refreshToken1 = refreshTokenRepository.findByUserEmail(userEmail)
-                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-        //refresh token db와 일치하는지 && 유효성 검사
-        if((refreshToken1.getRefreshToken()).equals(refreshToken) && jwtTokenProvider.validateToken(refreshToken)){
-            //새로 발급
-            String accessToken = jwtTokenProvider.createAccessToken(user.getEmail(), user.getRole());
-            String newRefreshToken = jwtTokenProvider.createRefreshToken(user.getEmail(), user.getRole());
-
-            updateRefreshToken(userEmail, newRefreshToken);
-
-            return new RefreshTokenResponseDto(accessToken, newRefreshToken);
+        //refresh token 검증
+        if (!jwtTokenProvider.validateToken(refreshToken)) {
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
-        else throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+
+        String refreshTokenInRedis = redisTemplate.opsForValue().get(user.getEmail());
+        if (!refreshToken.equals(refreshTokenInRedis)) {
+            throw new CustomException(ErrorCode.REFRESH_TOKEN_DOESNT_MATCH);
+        }
+
+        //토큰 재발행 & redis 업데이트
+        String newAccessToken = jwtTokenProvider.createAccessToken(user.getEmail(), user.getRole());
+        String newRefreshToken = jwtTokenProvider.createRefreshToken(user.getEmail(), user.getRole());
+        updateRefreshToken(user.getEmail(), newRefreshToken);
+
+        return new RefreshTokenResponseDto(newAccessToken, newRefreshToken);
     }
 }

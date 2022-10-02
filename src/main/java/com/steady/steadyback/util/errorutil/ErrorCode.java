@@ -31,12 +31,14 @@ public enum ErrorCode {
     NOTICE_NOT_FOUND(NOT_FOUND, "해당 공지사항 정보를 찾을 수 없습니다."),
 
     UNAUTHORIZED_USER(UNAUTHORIZED, "권한이 없습니다."),
-    INVALID_TOKEN(UNAUTHORIZED, "토큰이 만료됐거나 유효하지 않습니다."),
     NON_LOGIN(UNAUTHORIZED, "로그인 후 이용 가능합니다."),
     INFO_NOT_FOUNT(NOT_FOUND, "해당 정보를 찾을 수 없습니다."),
+
     USER_STUDY_ALREADY_EXISTS(CONFLICT, "이미 가입한 스터디원입니다."),
 
-    INVALID_REFRESH_TOKEN(UNAUTHORIZED, "리프레시 토큰이 유효하지 않습니다. 재로그인 해주세요.")
+    INVALID_TOKEN(BAD_REQUEST, "토큰이 만료됐거나 유효하지 않습니다."),
+    INVALID_REFRESH_TOKEN(BAD_REQUEST, "리프레시 토큰이 유효하지 않습니다. 재로그인 해주세요."),
+    REFRESH_TOKEN_DOESNT_MATCH(BAD_REQUEST, "리프레시 토큰이 매치되지 않습니다.")
     ;
 
     private final HttpStatus httpStatus;
