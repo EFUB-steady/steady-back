@@ -28,8 +28,8 @@ public class TokenService {
         redisTemplate.opsForValue().set(
                 userEmail,
                 refreshToken,
-                60 * 60 * 24 * 14,
-                TimeUnit.SECONDS
+                60 * 60 * 24 * 14 * 1000L,
+                TimeUnit.MILLISECONDS
         );
     }
 

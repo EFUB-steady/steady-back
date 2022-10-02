@@ -65,7 +65,7 @@ public class UserController {
         return loginResponseDto;
     }
 
-    @PostMapping("/token/refresh")
+    @PostMapping("/refresh/token")
     public RefreshTokenResponseDto refreshToken(@RequestHeader(value="KEY-EMAIL") String email,
                                                 @RequestHeader(value="REFRESH-TOKEN") String refreshToken) {
         RefreshTokenResponseDto refreshTokenResponseDto = tokenService.refreshToken(email, refreshToken);
