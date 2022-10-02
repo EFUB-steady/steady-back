@@ -1,8 +1,6 @@
 package com.steady.steadyback.service;
 
 import com.steady.steadyback.config.JwtTokenProvider;
-import com.steady.steadyback.domain.RefreshToken;
-import com.steady.steadyback.domain.RefreshTokenRepository;
 import com.steady.steadyback.domain.User;
 import com.steady.steadyback.domain.UserRepository;
 import com.steady.steadyback.dto.RefreshTokenResponseDto;
@@ -13,7 +11,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.naming.AuthenticationException;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -21,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 public class TokenService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional

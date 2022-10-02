@@ -2,8 +2,6 @@ package com.steady.steadyback.controller;
 
 import com.steady.steadyback.config.JwtTokenProvider;
 
-import com.steady.steadyback.domain.RefreshToken;
-import com.steady.steadyback.domain.RefreshTokenRepository;
 import com.steady.steadyback.domain.User;
 import com.steady.steadyback.domain.UserRepository;
 import com.steady.steadyback.dto.*;
