@@ -1,6 +1,5 @@
-FROM openjdk:11-jre-slim
+FROM openjdk:11-jdk-slim
 
-VOLUME /tmp
 ARG JAR_FILE=build/libs/*.jar
 COPY ${JAR_FILE} myapp.jar
 EXPOSE 8080
