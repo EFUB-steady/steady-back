@@ -33,7 +33,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public ResponseEntity<Object> joinUser(SignupRequestDto signupRequestDto){
 
-        if (signupRequestDto.getName().isEmpty()||signupRequestDto.getNickname().isEmpty()||signupRequestDto.getEmail().isEmpty()||signupRequestDto.getPassword().isEmpty()||signupRequestDto.getPhone().isEmpty())
+        if (signupRequestDto.getName().isEmpty()||signupRequestDto.getNickname().isEmpty()||signupRequestDto.getEmail().isEmpty()||signupRequestDto.getPassword().isEmpty()) //||signupRequestDto.getPhone().isEmpty()
             throw new CustomException(ErrorCode.CANNOT_EMPTY_CONTENT);
 
         User user = signupRequestDto.toEntity(signupRequestDto);

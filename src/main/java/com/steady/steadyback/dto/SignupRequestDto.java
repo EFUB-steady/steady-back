@@ -17,6 +17,7 @@ public class SignupRequestDto {
     private String email;
     private String password;
     private String phone;
+    private Long kakaoId;
 
     @Builder
     public SignupRequestDto(User user) {
@@ -25,6 +26,7 @@ public class SignupRequestDto {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.phone = user.getPhone();
+        this.kakaoId = user.getKakaoId();
     }
 
     public void encryptPassword(PasswordEncoder passwordEncoder) {
@@ -42,6 +44,7 @@ public class SignupRequestDto {
                 .email(signupRequestDto.getEmail())
                 .password(signupRequestDto.getPassword())
                 .phone(signupRequestDto.getPhone())
+                .kakaoId(signupRequestDto.kakaoId)
                 .build();
     }
 }

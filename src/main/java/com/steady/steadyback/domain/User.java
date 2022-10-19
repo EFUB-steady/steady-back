@@ -36,22 +36,25 @@ public class User implements UserDetails {
     @Column(length = 255)
     private String password;
 
-    @NotNull
+//    @NotNull
     @Column(length = 13)
     private String phone;
 
     @Column
     private String role;
 
-    @Builder
+    @Column
+    private Long kakaoId;
 
-    public User(String name,String nickname, String email, String password, String phone) {
+    @Builder
+    public User(String name,String nickname, String email, String password, String phone, Long kakaoId) {
         this.name = name;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.phone = phone;
         this.name = name;
+        this.kakaoId = kakaoId;
         this.role = "USER";
 
     }

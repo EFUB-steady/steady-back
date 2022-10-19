@@ -154,3 +154,5 @@
 ## 🍈 API 명세서
 ### [🔗 Link](https://www.notion.so/efub/API-996723e4ac2b454596b359066b061361)
 
+## ci/cd 테스트
+
