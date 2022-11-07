@@ -49,6 +49,9 @@ public class UserController {
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String kakaoRedirectUri;
 
+    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
+    private String kakaoClientSecret;
+
     @Value("${cos.key}")
     private String cosKey;
 
@@ -66,6 +69,7 @@ public class UserController {
         params.add("client_id", kakaoClientId);
         params.add("redirect_uri", kakaoRedirectUri);
         params.add("code", code);
+        params.add("client_secret", kakaoClientSecret);
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(params, headers);
 
