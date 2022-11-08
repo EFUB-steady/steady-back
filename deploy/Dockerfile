@@ -6,6 +6,3 @@ EXPOSE 8080
 
 ENTRYPOINT ["java","-jar","myapp.jar", \
 "--spring.config.location=/config/application-secret.properties"]
-
-
-
