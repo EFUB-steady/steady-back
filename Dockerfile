@@ -4,4 +4,5 @@ ARG JAR_FILE=build/libs/*-SNAPSHOT.jar
 COPY ${JAR_FILE} myapp.jar
 EXPOSE 8080
 
-java -jar myapp.jar -Dspring.profiles.active=secret
+ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-Dspring.config.location=classpath:/application.properties,classpath:/application-secret.properties", "-jar", "/myapp.jar"]
+
