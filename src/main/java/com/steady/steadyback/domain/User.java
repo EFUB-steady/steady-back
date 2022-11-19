@@ -47,7 +47,8 @@ public class User implements UserDetails {
     private Long kakaoId;
 
     @Builder
-    public User(String name,String nickname, String email, String password, String phone, Long kakaoId) {
+    public User(Long id, String name,String nickname, String email, String password, String phone, Long kakaoId) {
+        this.id = id;
         this.name = name;
         this.nickname = nickname;
         this.email = email;
